@@ -10,13 +10,16 @@ import Register from './pages/Register';
 import TeamSetup from './pages/TeamSetup';
 import ParticipantDashboard from './pages/ParticipantDashboard';
 import Leaderboard from './pages/Leaderboard';
-import AdminPortal from './pages/admin/AdminPortal';
+import AdminRounds from './pages/admin/AdminRounds';
+import AdminQuestions from './pages/admin/AdminQuestions';
+import AdminTeams from './pages/admin/AdminTeams';
+import AdminSubmissions from './pages/admin/AdminSubmissions';
 
 function HomeRedirect() {
   const { user, loading } = useAuth();
   if (loading) return null;
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role === 'ADMIN') return <Navigate to="/admin" replace />;
+  if (user.role === 'ADMIN') return <Navigate to="/admin/rounds" replace />;
   return <Navigate to="/arena" replace />;
 }
 
@@ -50,12 +53,40 @@ export default function App() {
                 }
               />
 
-              {/* Admin Route */}
+              {/* Admin Routes */}
               <Route
                 path="/admin"
+                element={<Navigate to="/admin/rounds" replace />}
+              />
+              <Route
+                path="/admin/rounds"
                 element={
                   <ProtectedRoute requiredRole="ADMIN">
-                    <AdminPortal />
+                    <AdminRounds />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/questions"
+                element={
+                  <ProtectedRoute requiredRole="ADMIN">
+                    <AdminQuestions />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/teams"
+                element={
+                  <ProtectedRoute requiredRole="ADMIN">
+                    <AdminTeams />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/submissions"
+                element={
+                  <ProtectedRoute requiredRole="ADMIN">
+                    <AdminSubmissions />
                   </ProtectedRoute>
                 }
               />

@@ -2,11 +2,11 @@ const Question = require('../models/Question');
 const TeamQuestionStatus = require('../models/TeamQuestionStatus');
 
 /**
- * Resolves the currently unlocked question for a given team within a round.
- * Fulfills PU-1, PU-2, D-3, D-5, S16
+ * Get current unlocked question — unlockService.js (PU-1, PU-2, D-3)
+ * Implements Section 9.1 core algorithm
  */
 async function getCurrentQuestion(teamId, roundId) {
-  // Fetch all questions for this round ordered sequentially
+  // Fetch all questions for this round ordered sequentially by unlockOrder
   const questions = await Question.find({ round: roundId }).sort({ unlockOrder: 1 });
   if (!questions || questions.length === 0) {
     return null;
@@ -14,40 +14,24 @@ async function getCurrentQuestion(teamId, roundId) {
 
   const questionIds = questions.map(q => q._id);
 
-  // Fetch all recorded status entries for this team in this round
-  const statuses = await TeamQuestionStatus.find({
+  // Fetch all solved questions for this team in this round
+  const solved = await TeamQuestionStatus.find({
     team: teamId,
     question: { $in: questionIds }
-  });
+  }).select('question');
 
-  const statusMap = new Map();
-  statuses.forEach(s => {
-    statusMap.set(s.question.toString(), s);
-  });
+  const solvedSet = new Set(solved.map(s => s.question.toString()));
 
-  // 1. Check if there is an explicitly UNLOCKED question that hasn't been SOLVED
+  // Find first question in sequence that is not solved
   for (const q of questions) {
-    const qId = q._id.toString();
-    const st = statusMap.get(qId);
-    if (st && st.status === 'UNLOCKED') {
+    if (!solvedSet.has(q._id.toString())) {
       const qObj = q.toObject();
-      delete qObj.correctAnswer;
+      delete qObj.correctAnswer; // stripCorrectAnswer: never leak correctAnswer to participant
       return qObj;
     }
   }
 
-  // 2. Otherwise find the first question in sequence that is NOT solved
-  for (const q of questions) {
-    const qId = q._id.toString();
-    const st = statusMap.get(qId);
-    if (!st || st.status !== 'SOLVED') {
-      const qObj = q.toObject();
-      delete qObj.correctAnswer;
-      return qObj;
-    }
-  }
-
-  // All questions in this round are solved
+  // All questions in this round solved
   return null;
 }
 

@@ -2,6 +2,7 @@ const Question = require('../models/Question');
 const Round = require('../models/Round');
 const Team = require('../models/Team');
 const Submission = require('../models/Submission');
+const TeamQuestionStatus = require('../models/TeamQuestionStatus');
 const { getCurrentQuestion } = require('../services/unlockService');
 const { evaluate } = require('../services/evaluationService');
 const { processSubmission } = require('../services/scoringService');
@@ -44,24 +45,26 @@ async function submitAnswer(req, res, next) {
       });
     }
 
-    // Verify question is either currently unlocked OR already solved (PU-2, REL-2)
-    const TeamQuestionStatus = require('../models/TeamQuestionStatus');
-    const existingStatus = await TeamQuestionStatus.findOne({ team: team._id, question: questionId });
-    const isAlreadySolved = existingStatus && existingStatus.status === 'SOLVED';
+    // Verify question is currently unlocked OR already solved (PU-2, REL-2)
+    const existingSolved = await TeamQuestionStatus.findOne({ team: team._id, question: questionId });
+    if (!existingSolved) {
+      const currentUnlocked = await getCurrentQuestion(team._id, round._id);
+      const isCurrent = currentUnlocked && currentUnlocked._id.toString() === questionId.toString();
 
-    const currentUnlocked = await getCurrentQuestion(team._id, round._id);
-    const isCurrent = currentUnlocked && currentUnlocked._id.toString() === questionId.toString();
-
-    if (!isCurrent && !isAlreadySolved) {
-      return res.status(403).json({
-        error: { code: 'QUESTION_LOCKED', message: 'Question is not currently unlocked for your team' }
-      });
+      if (!isCurrent) {
+        const justSolved = await TeamQuestionStatus.findOne({ team: team._id, question: questionId });
+        if (!justSolved) {
+          return res.status(403).json({
+            error: { code: 'QUESTION_LOCKED', message: 'Question is not currently unlocked for your team' }
+          });
+        }
+      }
     }
 
-    // Evaluate answer correctness
+    // Evaluate answer correctness (EV-1, EV-2, D-9)
     const isCorrect = evaluate(fullQuestion, answer);
 
-    // Process submission with atomic scoring and duplicate protection
+    // Process submission with atomic scoring and duplicate protection (REL-1, REL-2)
     const result = await processSubmission({
       user,
       team,
@@ -95,4 +98,77 @@ async function getMyTeamSubmissions(req, res, next) {
   }
 }
 
-module.exports = { submitAnswer, getMyTeamSubmissions };
+async function getAdminSubmissions(req, res, next) {
+  try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.max(1, parseInt(req.query.limit) || 20);
+    const { team, question } = req.query;
+
+    const query = {};
+    if (team) query.team = team;
+    if (question) query.question = question;
+
+    const total = await Submission.countDocuments(query);
+    const submissions = await Submission.find(query)
+      .populate('team', 'name teamCode')
+      .populate('question', 'title type points')
+      .populate('submittedBy', 'name email')
+      .sort({ timestamp: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    return res.json({
+      submissions,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit)
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getTeamProgress(req, res, next) {
+  try {
+    const { id: teamId } = req.params;
+
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return res.status(404).json({
+        error: { code: 'NOT_FOUND', message: 'Team not found' }
+      });
+    }
+
+    const solvedList = await TeamQuestionStatus.find({ team: teamId })
+      .populate('question', 'title type points unlockOrder round');
+
+    const submissionsCount = await Submission.countDocuments({ team: teamId });
+    const correctCount = await Submission.countDocuments({ team: teamId, isCorrect: true });
+
+    return res.json({
+      team: {
+        id: team._id,
+        name: team.name,
+        score: team.totalScore,
+        lastScoreUpdateAt: team.lastScoreUpdateAt
+      },
+      questionStatuses: solvedList,
+      stats: {
+        totalSubmissions: submissionsCount,
+        correctSubmissions: correctCount
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  submitAnswer,
+  getMyTeamSubmissions,
+  getAdminSubmissions,
+  getTeamProgress
+};

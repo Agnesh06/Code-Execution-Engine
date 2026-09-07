@@ -1,37 +1,43 @@
 const mongoose = require('mongoose');
 
-let mongod = null;
+function redactMongoUri(uri) {
+  try {
+    const parsed = new URL(uri);
+    return `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
+  } catch {
+    return '[invalid MongoDB URI]';
+  }
+}
 
 async function connectDB() {
-  const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/quizplatform';
-  
+  const uri = process.env.MONGO_URI?.trim();
+
+  if (!uri) {
+    throw new Error(
+      'MONGO_URI is required. Add your MongoDB Atlas connection string to backend/.env. See backend/.env.example.'
+    );
+  }
+
+  if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
+    throw new Error('MONGO_URI must start with mongodb:// or mongodb+srv://.');
+  }
+
   try {
-    // Attempt standard connection with 3-second timeout
     await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 3000,
+      serverSelectionTimeoutMS: Number(process.env.MONGO_SERVER_SELECTION_TIMEOUT_MS) || 10000,
     });
-    console.log(`[MongoDB] Connected successfully to ${uri}`);
+    console.log(`[MongoDB] Connected successfully to ${redactMongoUri(uri)}`);
   } catch (err) {
-    console.warn(`[MongoDB] Warning: Could not connect to external MongoDB at ${uri}. Falling back to in-memory MongoDB...`);
-    try {
-      const { MongoMemoryServer } = require('mongodb-memory-server');
-      mongod = await MongoMemoryServer.create();
-      const memUri = mongod.getUri();
-      await mongoose.connect(memUri);
-      console.log(`[MongoDB] Connected successfully to in-memory fallback MongoDB at ${memUri}`);
-    } catch (memErr) {
-      console.error('[MongoDB] Fatal: Failed to initialize in-memory fallback MongoDB:', memErr.message);
-      throw memErr;
-    }
+    throw new Error(
+      `Unable to connect to MongoDB at ${redactMongoUri(uri)}: ${err.message}. ` +
+      'For Atlas, verify the database user, URL-encoded password, cluster hostname, and Network Access IP allowlist.'
+    );
   }
 }
 
 async function disconnectDB() {
   try {
     await mongoose.disconnect();
-    if (mongod) {
-      await mongod.stop();
-    }
   } catch (err) {
     console.error('[MongoDB] Disconnect error:', err.message);
   }

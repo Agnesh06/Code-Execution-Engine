@@ -113,4 +113,61 @@ async function getMyTeam(req, res, next) {
   }
 }
 
-module.exports = { createTeam, joinTeam, getMyTeam };
+async function getAllTeams(req, res, next) {
+  try {
+    const teams = await Team.find()
+      .populate('members', 'name email')
+      .sort({ totalScore: -1, createdAt: 1 });
+
+    return res.json({ teams });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function getTeamById(req, res, next) {
+  try {
+    const { id } = req.params;
+    const team = await Team.findById(id).populate('members', 'name email');
+    if (!team) {
+      return res.status(404).json({
+        error: { code: 'NOT_FOUND', message: 'Team not found' }
+      });
+    }
+
+    return res.json({ team });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function removeTeamMember(req, res, next) {
+  try {
+    const { id, userId } = req.params;
+
+    const team = await Team.findById(id);
+    if (!team) {
+      return res.status(404).json({
+        error: { code: 'NOT_FOUND', message: 'Team not found' }
+      });
+    }
+
+    team.members = team.members.filter(m => m.toString() !== userId);
+    await team.save();
+
+    await User.findByIdAndUpdate(userId, { team: null });
+
+    return res.json({ message: 'Member removed successfully', team });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = {
+  createTeam,
+  joinTeam,
+  getMyTeam,
+  getAllTeams,
+  getTeamById,
+  removeTeamMember
+};

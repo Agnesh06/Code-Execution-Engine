@@ -118,25 +118,28 @@ describe('Progressive Unlock Tests (unlock.test.js)', () => {
     expect(nextRes.body.question.correctAnswer).toBeUndefined();
   });
 
-  test('Manual Admin Unlock route unlocks question for team without solving (RC-3, S16)', async () => {
-    const { adminToken, partToken, team, q2 } = await setupFixtures();
+  test('When all questions in a round are solved, returns roundComplete: true (PU-1, PU-2, Section 14)', async () => {
+    const { partToken, q1, q2 } = await setupFixtures();
 
-    // Admin manually unlocks Question 2 for this team
-    const unlockRes = await request(app)
-      .post(`/api/admin/teams/${team._id}/unlock`)
-      .set('Authorization', `Bearer ${adminToken}`)
-      .send({ questionId: q2._id });
+    // Solve Question 1
+    await request(app)
+      .post('/api/submissions')
+      .set('Authorization', `Bearer ${partToken}`)
+      .send({ questionId: q1._id, answer: 'A' });
 
-    expect(unlockRes.status).toBe(200);
-    expect(unlockRes.body.statusRecord.status).toBe('UNLOCKED');
-    expect(unlockRes.body.statusRecord.unlockedBy).toBe('ADMIN_OVERRIDE');
+    // Solve Question 2
+    await request(app)
+      .post('/api/submissions')
+      .set('Authorization', `Bearer ${partToken}`)
+      .send({ questionId: q2._id, answer: 'secret' });
 
-    // Participant now sees Question 2
-    const currentRes = await request(app)
+    // Query current question after all solved
+    const finalRes = await request(app)
       .get('/api/questions/current')
       .set('Authorization', `Bearer ${partToken}`);
 
-    expect(currentRes.status).toBe(200);
-    expect(currentRes.body.question._id).toBe(q2._id.toString());
+    expect(finalRes.status).toBe(200);
+    expect(finalRes.body.question).toBeNull();
+    expect(finalRes.body.roundComplete).toBe(true);
   });
 });

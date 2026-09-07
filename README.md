@@ -9,7 +9,7 @@ See the complete [Requirements Specification](file:///d:/quiz/REQUIREMENTS.md) f
 ## 1. Tech Stack
 - **Frontend**: React 18, Vite, Tailwind CSS, Lucide Icons, Socket.IO Client
 - **Backend**: Node.js, Express, Socket.IO, express-validator, jsonwebtoken, bcryptjs
-- **Database**: MongoDB (Mongoose ODM) with automated in-memory fallback (`mongodb-memory-server`) for offline reliability
+- **Database**: MongoDB Atlas or MongoDB (Mongoose ODM); tests use an isolated in-memory database
 - **Testing**: Jest + Supertest with isolated in-memory test database
 - **Deployment**: Docker & Docker Compose
 
@@ -30,7 +30,7 @@ After running `npm run seed` in `backend/` (or on first boot):
 
 ### Prerequisites
 - **Node.js**: `>= 18.0.0` and **npm** installed.
-- **MongoDB** (Optional): If MongoDB is not running locally on port 27017, the backend automatically uses an embedded in-memory database (`mongodb-memory-server`) with zero setup needed.
+- A MongoDB Atlas cluster (recommended) or MongoDB server. The application requires a real database so account data persists.
 
 ---
 
@@ -46,7 +46,21 @@ cd ../frontend && npm install
 
 ---
 
-### Step 2: Seed the Database
+### Step 2: Configure MongoDB Atlas
+
+Copy `backend/.env.example` to `backend/.env`, then replace `MONGO_URI` with the connection string from your Atlas cluster. Keep this file private; it is already ignored by Git.
+
+In Atlas, create a database user with read/write access and add your current public IP address under **Network Access**. URL-encode password characters such as `@`, `:`, `/`, and `%`. Replace the example `JWT_SECRET` with a long random value before deployment.
+
+```powershell
+Copy-Item backend/.env.example backend/.env
+```
+
+If Atlas cannot be reached, the backend now exits with a diagnostic instead of using a temporary database. That prevents registrations from seeming successful but disappearing after restart.
+
+---
+
+### Step 3: Seed the Database
 Populates the default tournament event, Round 1, sample questions, and the admin account:
 ```bash
 # From the project root:
@@ -58,7 +72,7 @@ cd backend && npm run seed
 
 ---
 
-### Step 3: Start the Servers
+### Step 4: Start the Servers
 
 You will need **two terminal windows**:
 
@@ -71,9 +85,9 @@ npm run dev:backend
 cd backend
 npm run dev
 ```
-* 🟢 **Backend Port**: `http://localhost:5001`
-* 🟢 **Health Check**: [http://localhost:5001/api/health](http://localhost:5001/api/health)
-*(Note: Visiting `http://localhost:5001/` directly returns `Cannot GET /` because it is a REST API; open the Frontend URL below to view the application UI).*
+* 🟢 **Backend Port**: `http://localhost:5000`
+* 🟢 **Health Check**: [http://localhost:5000/api/health](http://localhost:5000/api/health)
+*(Note: Visiting `http://localhost:5000/` directly returns `Cannot GET /` because it is a REST API; open the Frontend URL below to view the application UI).*
 
 #### Terminal 2 — Frontend User Interface (React + Vite)
 ```bash
@@ -88,7 +102,7 @@ npm run dev
 
 ---
 
-### Step 4: Accessing the App
+### Step 5: Accessing the App
 
 1. **Admin Login**:
    - Open [http://localhost:5173/login](http://localhost:5173/login)
@@ -112,7 +126,7 @@ docker-compose up --build
 ```
 - Frontend: `http://localhost:5173`
 - Backend API: `http://localhost:5000`
-- MongoDB: `mongodb://localhost:27017`
+- Before starting Docker, create `backend/.env` from `backend/.env.example` and set your Atlas `MONGO_URI` and `JWT_SECRET`.
 
 ---
 

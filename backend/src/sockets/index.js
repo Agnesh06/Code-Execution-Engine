@@ -3,10 +3,15 @@ const { getLeaderboard } = require('../services/leaderboardService');
 
 let ioInstance = null;
 
+const socketOrigins = (process.env.CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 function initSocket(httpServer) {
   ioInstance = new Server(httpServer, {
     cors: {
-      origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+      origin: socketOrigins,
       methods: ['GET', 'POST']
     }
   });

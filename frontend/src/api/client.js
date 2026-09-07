@@ -60,7 +60,7 @@ export const api = {
     method: 'POST',
     body: JSON.stringify({ questionId, answer })
   }),
-  getMySubmissions: () => request('/submissions/me/submissions'),
+  getMySubmissions: () => request('/teams/me/submissions'),
 
   // Leaderboard
   getLeaderboard: () => request('/leaderboard'),
@@ -98,14 +98,10 @@ export const api = {
     }),
     deleteQuestion: (id) => request(`/admin/questions/${id}`, { method: 'DELETE' }),
 
-    // Teams & Manual Unlock
+    // Teams
     getTeams: () => request('/admin/teams'),
     getTeam: (id) => request(`/admin/teams/${id}`),
     removeTeamMember: (teamId, userId) => request(`/admin/teams/${teamId}/members/${userId}`, { method: 'DELETE' }),
-    manualUnlockQuestion: (teamId, questionId) => request(`/admin/teams/${teamId}/unlock`, {
-      method: 'POST',
-      body: JSON.stringify({ questionId })
-    }),
     getTeamProgress: (teamId) => request(`/admin/teams/${teamId}/progress`),
 
     // Submissions

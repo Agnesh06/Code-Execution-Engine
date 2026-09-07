@@ -11,27 +11,13 @@ const teamQuestionStatusSchema = new mongoose.Schema({
     ref: 'Question',
     required: true
   },
-  status: {
-    type: String,
-    enum: ['LOCKED', 'UNLOCKED', 'SOLVED'],
-    default: 'UNLOCKED'
-  },
-  unlockedBy: {
-    type: String,
-    enum: ['AUTO', 'ADMIN_OVERRIDE'],
-    default: 'AUTO'
-  },
-  unlockedAt: {
-    type: Date,
-    default: Date.now
-  },
   solvedAt: {
     type: Date,
-    default: null
+    default: Date.now
   }
 });
 
-// Enforce single status record per (team, question) pair
+// UNIQUE COMPOUND INDEX: { team: 1, question: 1 } -> REL-2 duplicate-scoring guard
 teamQuestionStatusSchema.index({ team: 1, question: 1 }, { unique: true });
 
 module.exports = mongoose.model('TeamQuestionStatus', teamQuestionStatusSchema);
