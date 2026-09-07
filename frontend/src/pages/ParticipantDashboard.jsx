@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 import QuestionCard from '../components/QuestionCard';
-import { Trophy, Users, ShieldAlert, History, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
+import { Trophy, Users, History, CheckCircle2, XCircle, Zap } from 'lucide-react';
 
 export default function ParticipantDashboard() {
   const { user } = useAuth();
@@ -19,7 +19,6 @@ export default function ParticipantDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Initial load
   useEffect(() => {
     if (!user?.team) {
       navigate('/team-setup');
@@ -41,7 +40,6 @@ export default function ParticipantDashboard() {
         setRound(roundRes.round);
         setSubmissions(subRes.submissions || []);
 
-        // Load current unlocked question
         await fetchCurrentQuestion();
       } catch (err) {
         setError(err.message || 'Failed to load tournament arena data');
@@ -73,7 +71,6 @@ export default function ParticipantDashboard() {
     try {
       const result = await api.submitAnswer(questionId, answer);
 
-      // Refresh team score, submissions, and advance question upon correct answer (D-8)
       const [teamRes, subRes] = await Promise.all([
         api.getMyTeam(),
         api.getMySubmissions()
@@ -94,58 +91,64 @@ export default function ParticipantDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-cyan-500"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand-blueLight border-t-brand-blue" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      
-      {/* Top Tournament Event Status Banner */}
-      <div className="glass-panel rounded-2xl p-6 border border-gray-800 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+
+      {/* Tournament Banner */}
+      <div className="card p-5 mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center space-x-2">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-            <span className="text-xs uppercase font-mono tracking-widest text-emerald-400">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-xs font-semibold text-green-600 uppercase tracking-wider">
               {event?.status || 'Active Event'}
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-white font-['Outfit'] mt-1">
+          <h1 className="text-xl font-bold text-brand-navy">
             {event?.name || 'Grand Tournament'}
           </h1>
-          <p className="text-xs text-gray-400 mt-0.5">
-            Current Stage: <span className="text-cyan-400 font-semibold">{round?.name || 'Open Round'}</span>
+          <p className="text-xs text-brand-muted mt-0.5">
+            Current Stage:{' '}
+            <span className="font-semibold text-brand-blue">{round?.name || 'Open Round'}</span>
           </p>
         </div>
 
         {/* Team Score Card */}
-        <div className="flex items-center space-x-4 bg-gray-900/80 border border-gray-700/80 rounded-xl px-5 py-3 shadow-inner">
+        <div className="flex items-center gap-5 bg-slate-50 border border-brand-border rounded-xl px-5 py-3">
           <div>
-            <span className="text-[10px] uppercase font-mono tracking-wider text-gray-400">Team Score</span>
-            <div className="text-2xl font-mono font-extrabold text-amber-400">
-              {team?.totalScore ?? 0} <span className="text-xs font-normal text-gray-500">pts</span>
+            <div className="text-[10px] uppercase font-semibold text-brand-muted tracking-wider mb-0.5">Team Score</div>
+            <div className="text-2xl font-mono font-extrabold text-brand-blue">
+              {team?.totalScore ?? 0}
+              <span className="text-sm font-normal text-brand-muted ml-1">pts</span>
             </div>
           </div>
-          <div className="h-8 w-px bg-gray-700" />
+          <div className="w-px h-10 bg-brand-border" />
           <div>
-            <span className="text-[10px] uppercase font-mono tracking-wider text-gray-400">Team Name</span>
-            <div className="text-sm font-bold text-white truncate max-w-[140px]">{team?.name}</div>
+            <div className="text-[10px] uppercase font-semibold text-brand-muted tracking-wider mb-0.5">Team</div>
+            <div className="text-sm font-bold text-brand-navy truncate max-w-[140px]">{team?.name}</div>
+          </div>
+          <div className="h-10 w-10 rounded-xl bg-brand-blueSoft flex items-center justify-center">
+            <Zap className="h-5 w-5 text-brand-blue" />
           </div>
         </div>
       </div>
 
+      {/* Error Banner */}
       {error && (
-        <div className="mb-6 p-4 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 text-sm">
-          {error}
+        <div className="alert-error mb-6 animate-fade-in">
+          <span>{error}</span>
         </div>
       )}
 
-      {/* Main Arena Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left 2 Cols: Question Solver */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        {/* Left 2 Cols: Question */}
+        <div className="lg:col-span-2">
           <QuestionCard
             question={currentQuestion}
             roundComplete={roundComplete}
@@ -154,58 +157,63 @@ export default function ParticipantDashboard() {
           />
         </div>
 
-        {/* Right 1 Col: Team Roster & Submission Audit Feed */}
-        <div className="space-y-6">
-          
-          {/* Team Roster Card */}
-          <div className="glass-panel rounded-2xl p-5 border border-gray-800">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-3 flex items-center space-x-2">
-              <Users className="h-4 w-4 text-violet-400" />
-              <span>Teammates</span>
+        {/* Right 1 Col: Sidebar */}
+        <div className="space-y-5">
+
+          {/* Team Roster */}
+          <div className="card p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-muted mb-3 flex items-center gap-2">
+              <Users className="h-4 w-4 text-brand-blue" />
+              Teammates
             </h3>
             <div className="space-y-2">
               {team?.members?.map((m) => (
-                <div key={m._id} className="flex items-center justify-between text-xs py-1.5 px-3 rounded-lg bg-gray-900/60 border border-gray-800">
-                  <span className="font-medium text-gray-200">{m.name}</span>
+                <div key={m._id} className="flex items-center justify-between py-2 px-3 rounded-lg bg-slate-50 border border-brand-border">
+                  <div className="flex items-center gap-2">
+                    <div className="h-7 w-7 rounded-full bg-brand-blue flex items-center justify-center text-white text-xs font-bold">
+                      {m.name?.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium text-brand-navy">{m.name}</span>
+                  </div>
                   {m._id === user._id && (
-                    <span className="text-[9px] uppercase px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 font-mono">You</span>
+                    <span className="badge badge-blue">You</span>
                   )}
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Submission History Feed */}
-          <div className="glass-panel rounded-2xl p-5 border border-gray-800">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-3 flex items-center space-x-2">
-              <History className="h-4 w-4 text-cyan-400" />
-              <span>Recent Submissions</span>
+          {/* Submission History */}
+          <div className="card p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-muted mb-3 flex items-center gap-2">
+              <History className="h-4 w-4 text-brand-blue" />
+              Recent Submissions
             </h3>
 
             {submissions.length === 0 ? (
-              <p className="text-xs text-gray-500 italic text-center py-4">No submissions yet.</p>
+              <p className="text-xs text-brand-muted italic text-center py-4">No submissions yet.</p>
             ) : (
               <div className="space-y-2 max-h-[350px] overflow-y-auto pr-1">
                 {submissions.slice(0, 10).map((sub) => (
                   <div
                     key={sub._id}
-                    className={`p-2.5 rounded-xl border text-xs flex items-center justify-between transition-colors ${
+                    className={`p-3 rounded-xl border text-xs flex items-center justify-between gap-2 transition-colors ${
                       sub.isCorrect
-                        ? 'bg-emerald-950/20 border-emerald-800/40 text-emerald-200'
-                        : 'bg-rose-950/20 border-rose-800/40 text-rose-200'
+                        ? 'bg-green-50 border-green-200 text-green-800'
+                        : 'bg-red-50 border-red-200 text-red-800'
                     }`}
                   >
-                    <div className="flex items-center space-x-2 overflow-hidden">
+                    <div className="flex items-center gap-2 overflow-hidden min-w-0">
                       {sub.isCorrect ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                        <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
                       ) : (
-                        <XCircle className="h-4 w-4 text-rose-400 flex-shrink-0" />
+                        <XCircle className="h-4 w-4 text-red-400 flex-shrink-0" />
                       )}
                       <div className="truncate">
                         <span className="font-semibold">{sub.question?.title || 'Question'}</span>: "{sub.answer}"
                       </div>
                     </div>
-                    <span className="font-mono font-bold ml-2">
+                    <span className="font-mono font-bold flex-shrink-0">
                       {sub.isCorrect ? `+${sub.pointsAwarded}` : '0'}
                     </span>
                   </div>
@@ -215,9 +223,7 @@ export default function ParticipantDashboard() {
           </div>
 
         </div>
-
       </div>
-
     </div>
   );
 }

@@ -8,13 +8,14 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
 
   if (roundComplete) {
     return (
-      <div className="glass-panel-glow rounded-2xl p-10 text-center border border-cyan-500/30">
-        <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 mb-4 animate-bounce">
+      <div className="card p-10 text-center">
+        <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 mb-5">
           <Sparkles className="h-8 w-8" />
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2 font-['Outfit']">Round Completed!</h2>
-        <p className="text-gray-300 max-w-md mx-auto mb-4 text-sm">
-          Outstanding work! Your team has solved all available questions in this round. Stay tuned for upcoming rounds or monitor your team position on the live leaderboard!
+        <h2 className="text-2xl font-bold text-brand-navy mb-2">Round Completed!</h2>
+        <p className="text-brand-muted max-w-md mx-auto text-sm leading-relaxed">
+          Outstanding work! Your team has solved all available questions in this round.
+          Stay tuned for upcoming rounds or monitor your team position on the live leaderboard!
         </p>
       </div>
     );
@@ -22,10 +23,14 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
 
   if (!question) {
     return (
-      <div className="glass-panel rounded-2xl p-10 text-center border border-gray-800">
-        <HelpCircle className="h-10 w-10 text-gray-500 mx-auto mb-3" />
-        <h3 className="text-lg font-semibold text-gray-300">No Questions Available</h3>
-        <p className="text-xs text-gray-500 mt-1">Please wait for the tournament administrator to open the round.</p>
+      <div className="card p-10 text-center">
+        <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-slate-100 text-brand-muted mb-4 mx-auto">
+          <HelpCircle className="h-7 w-7" />
+        </div>
+        <h3 className="text-lg font-semibold text-brand-navy">No Questions Available</h3>
+        <p className="text-sm text-brand-muted mt-1">
+          Please wait for the tournament administrator to open the round.
+        </p>
       </div>
     );
   }
@@ -64,43 +69,41 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-6 sm:p-8 border border-gray-800 shadow-2xl relative overflow-hidden">
-      {/* Top Badges */}
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-800">
-        <div className="flex items-center space-x-2">
-          <span className="text-xs font-mono font-bold uppercase px-2.5 py-1 rounded-md bg-cyan-950 text-cyan-400 border border-cyan-800">
+    <div className="card p-6 sm:p-8 animate-slide-up">
+
+      {/* Header Badges */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-5 border-b border-brand-border">
+        <div className="flex items-center gap-2">
+          <span className="badge badge-gray font-mono">
             Question #{question.unlockOrder}
           </span>
-          <span className={`text-xs font-mono font-semibold uppercase px-2.5 py-1 rounded-md ${
-            question.type === 'MCQ'
-              ? 'bg-violet-950 text-violet-300 border border-violet-800'
-              : 'bg-amber-950 text-amber-300 border border-amber-800'
-          }`}>
+          <span className={`badge ${question.type === 'MCQ' ? 'badge-blue' : 'badge-violet'}`}>
             {question.type}
           </span>
         </div>
-
-        <div className="flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 text-xs font-mono font-bold">
+        <div className="flex items-center gap-1.5 badge badge-green !px-3 !py-1">
           <Award className="h-3.5 w-3.5" />
           <span>{question.points} Points</span>
         </div>
       </div>
 
       {/* Question Title & Description */}
-      <div className="mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 font-['Outfit']">
+      <div className="mb-7">
+        <h2 className="text-xl sm:text-2xl font-bold text-brand-navy mb-3">
           {question.title}
         </h2>
-        <p className="text-gray-300 text-base leading-relaxed whitespace-pre-line bg-[#090d16]/70 p-4 rounded-xl border border-gray-800/80">
-          {question.description}
-        </p>
+        <div className="bg-slate-50 border border-brand-border rounded-xl p-4">
+          <p className="text-brand-navyMid text-sm leading-relaxed whitespace-pre-line">
+            {question.description}
+          </p>
+        </div>
       </div>
 
       {/* Answer Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {question.type === 'MCQ' ? (
           <div className="space-y-3">
-            <label className="block text-xs font-medium uppercase tracking-wider text-gray-400">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-brand-muted">
               Select Your Answer
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -111,17 +114,17 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
                     type="button"
                     key={idx}
                     onClick={() => setSelectedOption(option)}
-                    className={`flex items-center justify-between p-4 rounded-xl border text-left transition-all ${
+                    className={`flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all duration-150 ${
                       isSelected
-                        ? 'bg-cyan-500/10 border-cyan-400 text-cyan-200 shadow-md shadow-cyan-500/10'
-                        : 'bg-gray-800/40 border-gray-700/60 text-gray-300 hover:bg-gray-800/80 hover:border-gray-600'
+                        ? 'border-brand-blue bg-brand-blueSoft text-brand-blue shadow-sm'
+                        : 'border-brand-border bg-white text-brand-navyMid hover:border-brand-blueMid hover:bg-brand-blueSoft/40'
                     }`}
                   >
                     <span className="font-medium text-sm">{option}</span>
-                    <div className={`h-5 w-5 rounded-full border flex items-center justify-center ${
-                      isSelected ? 'border-cyan-400 bg-cyan-400' : 'border-gray-600'
+                    <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                      isSelected ? 'border-brand-blue bg-brand-blue' : 'border-brand-borderDark'
                     }`}>
-                      {isSelected && <div className="h-2 w-2 rounded-full bg-gray-950" />}
+                      {isSelected && <div className="h-2 w-2 rounded-full bg-white" />}
                     </div>
                   </button>
                 );
@@ -130,7 +133,7 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
           </div>
         ) : (
           <div className="space-y-2">
-            <label className="block text-xs font-medium uppercase tracking-wider text-gray-400">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-brand-muted">
               Your Riddle Answer
             </label>
             <input
@@ -138,37 +141,29 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
               value={textAnswer}
               onChange={(e) => setTextAnswer(e.target.value)}
               placeholder="Type your answer here..."
-              className="w-full px-4 py-3.5 bg-gray-900/80 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
+              className="input-field"
             />
           </div>
         )}
 
-        {/* Feedback alert */}
+        {/* Feedback Alert */}
         {feedback && (
-          <div className={`p-4 rounded-xl flex items-center space-x-3 text-sm border animate-fade-in ${
-            feedback.type === 'success'
-              ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
-              : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
-          }`}>
+          <div className={`animate-fade-in ${feedback.type === 'success' ? 'alert-success' : 'alert-error'}`}>
             {feedback.type === 'success' ? (
-              <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-emerald-400" />
+              <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
             ) : (
-              <XCircle className="h-5 w-5 flex-shrink-0 text-rose-400" />
+              <XCircle className="h-5 w-5 flex-shrink-0" />
             )}
             <span>{feedback.message}</span>
           </div>
         )}
 
-        {/* Submit action */}
-        <div className="flex justify-end pt-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
-          >
+        {/* Submit */}
+        <div className="flex justify-end pt-1">
+          <button type="submit" disabled={isSubmitting} className="btn-primary">
             {isSubmitting ? (
               <>
-                <div className="h-4 w-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 <span>Evaluating...</span>
               </>
             ) : (

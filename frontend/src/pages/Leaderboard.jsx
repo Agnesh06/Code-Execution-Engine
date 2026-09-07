@@ -3,7 +3,7 @@ import { useSocket } from '../hooks/useSocket';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api/client';
 import LeaderboardTable from '../components/LeaderboardTable';
-import { Trophy, Radio, RefreshCw } from 'lucide-react';
+import { Trophy, RefreshCw, Wifi, WifiOff } from 'lucide-react';
 
 export default function Leaderboard() {
   const { leaderboard, isConnected, setLeaderboard } = useSocket();
@@ -35,37 +35,45 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      
-      {/* Header */}
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="flex items-center space-x-2">
-            <Trophy className="h-6 w-6 text-amber-400" />
-            <h1 className="text-3xl font-bold text-white font-['Outfit'] tracking-tight">
-              Live Tournament Leaderboard
+          <div className="flex items-center gap-2.5 mb-1">
+            <div className="h-10 w-10 rounded-xl bg-brand-amberBg flex items-center justify-center">
+              <Trophy className="h-5 w-5 text-brand-amber" />
+            </div>
+            <h1 className="text-3xl font-bold text-brand-navy">
+              Live Leaderboard
             </h1>
           </div>
-          <p className="text-sm text-gray-400 mt-1">
+          <p className="text-sm text-brand-muted pl-12">
             Real-time rankings sorted by total score and earliest completion time.
           </p>
         </div>
 
-        {/* Real-time Status Indicator */}
-        <div className="flex items-center space-x-3">
-          <div className={`flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs font-mono border ${
+        {/* Controls */}
+        <div className="flex items-center gap-3">
+          {/* Connection Badge */}
+          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${
             isConnected
-              ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30'
-              : 'bg-amber-950/40 text-amber-300 border-amber-500/30'
+              ? 'bg-green-50 text-green-700 border-green-200'
+              : 'bg-amber-50 text-amber-700 border-amber-200'
           }`}>
-            <span className={`h-2 w-2 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-            <span>{isConnected ? 'LIVE WEBSOCKET' : 'CONNECTING...'}</span>
+            {isConnected ? (
+              <><span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" /><Wifi className="h-3 w-3" /> Live</>
+            ) : (
+              <><span className="h-2 w-2 rounded-full bg-amber-500" /><WifiOff className="h-3 w-3" /> Connecting</>
+            )}
           </div>
 
+          {/* Refresh */}
           <button
+            id="leaderboard-refresh"
             onClick={manualRefresh}
             title="Refresh Leaderboard"
-            className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-white transition-colors border border-gray-700 cursor-pointer"
+            className="btn-secondary !rounded-lg !px-3 !py-2"
           >
             <RefreshCw className="h-4 w-4" />
           </button>
