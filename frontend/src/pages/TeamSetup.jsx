@@ -84,14 +84,14 @@ export default function TeamSetup() {
   // ─── Already on a team ───────────────────────────────────
   if (team) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-12 relative z-10">
-        <div className="card p-8">
+      <div className="max-w-3xl mx-auto px-4 py-12 relative z-10 animate-fade-in-up">
+        <div className="card p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
 
           {/* Team Header */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-brand-border">
             <div>
               <span className="badge badge-blue mb-2">Team Profile</span>
-              <h1 className="text-3xl font-bold text-brand-navy mt-1">{team.name}</h1>
+              <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-navy to-brand-blue mt-1">{team.name}</h1>
             </div>
 
             {/* Team Code Card */}
@@ -151,10 +151,10 @@ export default function TeamSetup() {
 
   // ─── No team yet ─────────────────────────────────────────
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12 relative z-10">
+    <div className="max-w-4xl mx-auto px-4 py-12 relative z-10 animate-fade-in-up">
       <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-brand-navy">Team Setup</h1>
-        <p className="text-brand-muted text-sm mt-2 max-w-md mx-auto">
+        <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-navy to-brand-blue">Team Setup</h1>
+        <p className="text-brand-muted text-base mt-3 max-w-md mx-auto">
           Competitions are team-based. Create a new team or join an existing one using their 6-character code.
         </p>
       </div>
@@ -168,12 +168,12 @@ export default function TeamSetup() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         {/* Create Team Card */}
-        <div className="card p-8 flex flex-col gap-6">
+        <div className="card p-8 flex flex-col gap-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
           <div>
-            <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-brand-blueSoft mb-4">
-              <PlusCircle className="h-6 w-6 text-brand-blue" />
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-brand-blueSoft mb-4">
+              <PlusCircle className="h-7 w-7 text-brand-blue" />
             </div>
-            <h2 className="text-xl font-bold text-brand-navy">Create a New Team</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Create a New Team</h2>
             <p className="text-sm text-brand-muted mt-1.5">
               Found a new team. You'll receive a unique Team Code to share with your teammates.
             </p>
@@ -203,12 +203,12 @@ export default function TeamSetup() {
         </div>
 
         {/* Join Team Card */}
-        <div className="card p-8 flex flex-col gap-6">
+        <div className="card p-8 flex flex-col gap-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
           <div>
-            <div className="inline-flex items-center justify-center h-12 w-12 rounded-xl bg-violet-50 mb-4">
-              <KeyRound className="h-6 w-6 text-brand-violet" />
+            <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-violet-50 mb-4">
+              <KeyRound className="h-7 w-7 text-brand-violet" />
             </div>
-            <h2 className="text-xl font-bold text-brand-navy">Join Existing Team</h2>
+            <h2 className="text-2xl font-bold text-brand-navy">Join Existing Team</h2>
             <p className="text-sm text-brand-muted mt-1.5">
               Enter the 6-character Team Code provided by your team captain to join their roster.
             </p>
@@ -221,7 +221,7 @@ export default function TeamSetup() {
               <input
                 type="text"
                 required
-                maxLength={8}
+                maxLength={6}
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                 placeholder="e.g. CYBER9"
@@ -232,7 +232,6 @@ export default function TeamSetup() {
               type="submit"
               disabled={actionLoading}
               className="btn-primary w-full !rounded-xl"
-              style={{ background: '#7C3AED' }}
             >
               {actionLoading ? 'Joining...' : 'Join Team'}
             </button>

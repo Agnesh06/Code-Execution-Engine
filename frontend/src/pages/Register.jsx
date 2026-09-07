@@ -35,24 +35,24 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 relative z-10">
+    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 relative z-10 animate-fade-in-up">
       <div className="max-w-md w-full">
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-brand-blue shadow-blue mb-4">
-            <UserPlus className="h-7 w-7 text-white" strokeWidth={2.5} />
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-violet shadow-blue mb-5 transform transition-transform hover:scale-105">
+            <UserPlus className="h-8 w-8 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-2xl font-bold text-brand-navy">
+          <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-brand-violet">
             Create your account
           </h1>
-          <p className="text-sm text-brand-muted mt-1">
+          <p className="text-base text-brand-muted mt-2">
             Register to join or lead a competition team
           </p>
         </div>
 
         {/* Card */}
-        <div className="card p-8">
+        <div className="card p-8 shadow-card-lg">
 
           {/* Error Alert */}
           {error && (

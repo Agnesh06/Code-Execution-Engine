@@ -24,17 +24,17 @@ export default function Navbar() {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-brand-border shadow-card">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-brand-blueLight shadow-sm transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
 
         {/* Brand Logo */}
-        <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
-          <div className="h-9 w-9 rounded-xl bg-brand-blue flex items-center justify-center shadow-blue">
-            <Trophy className="h-4.5 w-4.5 text-white" strokeWidth={2.5} />
+        <Link to="/" className="flex items-center gap-2.5 flex-shrink-0 group">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-brand-blue to-brand-violet flex items-center justify-center shadow-blue transform group-hover:scale-105 transition-transform">
+            <Trophy className="h-5 w-5 text-white" strokeWidth={2.5} />
           </div>
           <div className="leading-tight">
-            <span className="block text-lg font-extrabold font-display text-brand-navy tracking-tight">
-              Quiz<span className="text-brand-blue">Arena</span>
+            <span className="block text-xl font-extrabold font-display text-brand-navy tracking-tight group-hover:text-brand-blue transition-colors">
+              Quiz<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-violet">Arena</span>
             </span>
             <span className="hidden sm:block text-[10px] font-medium text-brand-muted -mt-0.5">
               Live Competition Platform

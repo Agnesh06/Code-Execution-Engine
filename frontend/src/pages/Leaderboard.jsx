@@ -35,20 +35,20 @@ export default function Leaderboard() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10 animate-fade-in-up">
 
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="flex items-center gap-2.5 mb-1">
-            <div className="h-10 w-10 rounded-xl bg-brand-amberBg flex items-center justify-center">
-              <Trophy className="h-5 w-5 text-brand-amber" />
+          <div className="flex items-center gap-3 mb-2">
+            <div className="h-12 w-12 rounded-2xl bg-brand-amberBg flex items-center justify-center shadow-sm">
+              <Trophy className="h-6 w-6 text-brand-amber" />
             </div>
-            <h1 className="text-3xl font-bold text-brand-navy">
+            <h1 className="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-amber to-brand-orange">
               Live Leaderboard
             </h1>
           </div>
-          <p className="text-sm text-brand-muted pl-12">
+          <p className="text-base text-brand-muted pl-16">
             Real-time rankings sorted by total score and earliest completion time.
           </p>
         </div>

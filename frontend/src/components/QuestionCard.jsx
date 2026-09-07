@@ -69,7 +69,7 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
   };
 
   return (
-    <div className="card p-6 sm:p-8 animate-slide-up">
+    <div className="card p-6 sm:p-8 animate-scale-in hover:shadow-md transition-all duration-300 hover:-translate-y-1">
 
       {/* Header Badges */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-5 border-b border-brand-border">
@@ -89,11 +89,11 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
 
       {/* Question Title & Description */}
       <div className="mb-7">
-        <h2 className="text-xl sm:text-2xl font-bold text-brand-navy mb-3">
+        <h2 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-navy to-brand-blue mb-4">
           {question.title}
         </h2>
-        <div className="bg-slate-50 border border-brand-border rounded-xl p-4">
-          <p className="text-brand-navyMid text-sm leading-relaxed whitespace-pre-line">
+        <div className="bg-slate-50 border border-brand-border rounded-xl p-5 shadow-inner">
+          <p className="text-brand-navyMid text-base leading-relaxed whitespace-pre-line">
             {question.description}
           </p>
         </div>
@@ -114,13 +114,13 @@ export default function QuestionCard({ question, roundComplete, onSubmitAnswer, 
                     type="button"
                     key={idx}
                     onClick={() => setSelectedOption(option)}
-                    className={`flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all duration-150 ${
+                    className={`flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all duration-200 hover:-translate-y-0.5 ${
                       isSelected
-                        ? 'border-brand-blue bg-brand-blueSoft text-brand-blue shadow-sm'
-                        : 'border-brand-border bg-white text-brand-navyMid hover:border-brand-blueMid hover:bg-brand-blueSoft/40'
+                        ? 'border-brand-blue bg-brand-blueSoft text-brand-blue shadow-md scale-[1.02]'
+                        : 'border-brand-border bg-white text-brand-navyMid hover:border-brand-blueMid hover:bg-brand-blueSoft/40 hover:shadow-sm'
                     }`}
                   >
-                    <span className="font-medium text-sm">{option}</span>
+                    <span className="font-semibold text-base">{option}</span>
                     <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
                       isSelected ? 'border-brand-blue bg-brand-blue' : 'border-brand-borderDark'
                     }`}>

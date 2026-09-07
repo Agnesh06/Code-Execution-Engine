@@ -17,6 +17,7 @@ router.post('/events/:id/start', eventController.startEvent);
 router.post('/events/:id/end', eventController.endEvent);
 
 // Rounds
+router.get('/rounds', roundController.getAdminRounds);
 router.post('/rounds', roundController.createRound);
 router.post('/rounds/:id/open', roundController.openRound);
 router.post('/rounds/:id/close', roundController.closeRound);

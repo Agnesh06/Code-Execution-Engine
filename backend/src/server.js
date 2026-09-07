@@ -10,6 +10,17 @@ async function startServer() {
   try {
     await connectDB();
 
+    // Auto-seed admin user for in-memory DB or first-time setup
+    const User = require('./models/User');
+    const bcrypt = require('bcryptjs');
+    const adminEmail = 'admin@example.com';
+    let admin = await User.findOne({ email: adminEmail });
+    if (!admin) {
+      const passwordHash = await bcrypt.hash(process.env.SEED_ADMIN_PASSWORD || 'ChangeMe123!', 10);
+      await User.create({ name: 'Tournament Admin', email: adminEmail, passwordHash, role: 'ADMIN' });
+      console.log(`[Seed] Auto-created ADMIN user: ${adminEmail}`);
+    }
+
     const server = http.createServer(app);
     initSocket(server);
 

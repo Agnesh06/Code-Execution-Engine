@@ -48,20 +48,20 @@ export default function AdminPortal() {
       setLoading(true);
       const [evRes, rdRes, qRes, tmRes, subRes] = await Promise.all([
         api.getCurrentEvent(),
-        api.getCurrentRound(),
+        api.admin.getRounds(),
         api.admin.getQuestions({ limit: 50 }),
         api.admin.getTeams(),
         api.admin.getSubmissions({ limit: 50 })
       ]);
 
       setEvent(evRes.event);
-      setRounds(rdRes.round ? [rdRes.round] : []);
+      setRounds(rdRes.rounds || []);
       setQuestions(qRes.questions || []);
       setTeams(tmRes.teams || []);
       setSubmissions(subRes.submissions || []);
 
-      if (rdRes.round) {
-        setNewQRoundId(rdRes.round._id);
+      if (rdRes.rounds && rdRes.rounds.length > 0) {
+        setNewQRoundId(rdRes.rounds[0]._id);
       }
     } catch (err) {
       console.error('Failed to load admin portal data:', err);
@@ -187,18 +187,18 @@ export default function AdminPortal() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 animate-fade-in-up">
 
       {/* Page Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="flex items-center gap-2.5 mb-1">
-            <div className="h-10 w-10 rounded-xl bg-brand-blueSoft flex items-center justify-center">
-              <Shield className="h-5 w-5 text-brand-blue" />
+          <div className="flex items-center gap-3 mb-2">
+            <div className="h-12 w-12 rounded-2xl bg-brand-blueSoft flex items-center justify-center shadow-sm">
+              <Shield className="h-6 w-6 text-brand-blue" />
             </div>
-            <h1 className="text-2xl font-bold text-brand-navy">Admin Command Center</h1>
+            <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-navy to-brand-blue">Admin Command Center</h1>
           </div>
-          <p className="text-sm text-brand-muted pl-12">
+          <p className="text-base text-brand-muted pl-16">
             Tournament rounds control, questions management, team status, and manual unlock overrides.
           </p>
         </div>
@@ -225,9 +225,9 @@ export default function AdminPortal() {
           <button
             key={id}
             onClick={() => setActiveTab(id)}
-            className={`flex items-center gap-2 px-5 py-3 border-b-2 font-medium text-sm transition-colors whitespace-nowrap cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-3 border-b-2 font-semibold text-sm transition-all duration-200 whitespace-nowrap cursor-pointer hover:-translate-y-0.5 ${
               activeTab === id
-                ? 'border-brand-blue text-brand-blue bg-brand-blueSoft/40'
+                ? 'border-brand-blue text-brand-blue bg-brand-blueSoft/60'
                 : 'border-transparent text-brand-muted hover:text-brand-navy hover:bg-slate-50'
             }`}
           >
@@ -242,8 +242,8 @@ export default function AdminPortal() {
         <div className="space-y-6">
 
           {/* Event Lifecycle */}
-          <div className="card p-6">
-            <h2 className="text-base font-bold text-brand-navy mb-4">Event Lifecycle</h2>
+          <div className="card p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+            <h2 className="text-lg font-bold text-brand-navy mb-4">Event Lifecycle</h2>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
                 <p className="font-semibold text-brand-navy">{event?.name || 'No Event Created'}</p>
@@ -278,8 +278,8 @@ export default function AdminPortal() {
           </div>
 
           {/* Rounds Control */}
-          <div className="card p-6">
-            <h2 className="text-base font-bold text-brand-navy mb-4">Rounds Control</h2>
+          <div className="card p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+            <h2 className="text-lg font-bold text-brand-navy mb-4">Rounds Control</h2>
             <div className="space-y-3">
               {rounds.map((r) => (
                 <div key={r._id} className="p-4 rounded-xl bg-slate-50 border border-brand-border flex items-center justify-between gap-3">

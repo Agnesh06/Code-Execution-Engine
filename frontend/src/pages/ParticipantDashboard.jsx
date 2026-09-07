@@ -97,10 +97,10 @@ export default function ParticipantDashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 animate-fade-in-up">
 
       {/* Tournament Banner */}
-      <div className="card p-5 mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="card p-6 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
@@ -108,17 +108,17 @@ export default function ParticipantDashboard() {
               {event?.status || 'Active Event'}
             </span>
           </div>
-          <h1 className="text-xl font-bold text-brand-navy">
+          <h1 className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-navy to-brand-blue">
             {event?.name || 'Grand Tournament'}
           </h1>
-          <p className="text-xs text-brand-muted mt-0.5">
+          <p className="text-sm text-brand-muted mt-1">
             Current Stage:{' '}
             <span className="font-semibold text-brand-blue">{round?.name || 'Open Round'}</span>
           </p>
         </div>
 
         {/* Team Score Card */}
-        <div className="flex items-center gap-5 bg-slate-50 border border-brand-border rounded-xl px-5 py-3">
+        <div className="flex items-center gap-5 bg-slate-50 border border-brand-border rounded-2xl px-6 py-4 shadow-sm hover:shadow-md transition-shadow">
           <div>
             <div className="text-[10px] uppercase font-semibold text-brand-muted tracking-wider mb-0.5">Team Score</div>
             <div className="text-2xl font-mono font-extrabold text-brand-blue">
@@ -158,10 +158,10 @@ export default function ParticipantDashboard() {
         </div>
 
         {/* Right 1 Col: Sidebar */}
-        <div className="space-y-5">
+        <div className="space-y-6">
 
           {/* Team Roster */}
-          <div className="card p-5">
+          <div className="card p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-muted mb-3 flex items-center gap-2">
               <Users className="h-4 w-4 text-brand-blue" />
               Teammates
@@ -184,7 +184,7 @@ export default function ParticipantDashboard() {
           </div>
 
           {/* Submission History */}
-          <div className="card p-5">
+          <div className="card p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-muted mb-3 flex items-center gap-2">
               <History className="h-4 w-4 text-brand-blue" />
               Recent Submissions

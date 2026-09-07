@@ -89,4 +89,13 @@ async function getCurrentRound(req, res, next) {
   }
 }
 
-module.exports = { createRound, openRound, closeRound, getCurrentRound };
+async function getAdminRounds(req, res, next) {
+  try {
+    const rounds = await Round.find().sort({ order: 1 });
+    return res.json({ rounds });
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { createRound, openRound, closeRound, getCurrentRound, getAdminRounds };

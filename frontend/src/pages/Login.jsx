@@ -39,31 +39,31 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 relative z-10">
+    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12 relative z-10 animate-fade-in-up">
       <div className="max-w-md w-full">
 
         {/* Logo mark */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-brand-blue shadow-blue mb-4">
-            <Trophy className="h-7 w-7 text-white" strokeWidth={2.5} />
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-gradient-to-br from-brand-blue to-brand-violet shadow-blue mb-5 transform transition-transform hover:scale-105">
+            <Trophy className="h-8 w-8 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-2xl font-bold text-brand-navy">
+          <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-brand-blue to-brand-violet">
             Welcome back
           </h1>
-          <p className="text-sm text-brand-muted mt-1">
+          <p className="text-base text-brand-muted mt-2">
             Sign in to participate or manage live competitions
           </p>
         </div>
 
         {/* Card */}
-        <div className="card p-8">
+        <div className="card p-8 shadow-card-lg">
 
           {/* Demo Fill Button */}
           <button
             type="button"
             id="demo-admin-fill"
             onClick={fillAdmin}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 mb-6 bg-brand-blueSoft border border-brand-blueLight text-brand-blue text-sm font-medium rounded-xl hover:bg-brand-blueLight transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 mb-8 bg-brand-blueSoft border border-brand-blueLight text-brand-blue text-sm font-semibold rounded-xl hover:bg-brand-blueLight hover:-translate-y-0.5 transition-all"
           >
             <Shield className="h-4 w-4" />
             Fill Demo Admin Credentials

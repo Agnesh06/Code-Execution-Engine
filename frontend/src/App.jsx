@@ -14,7 +14,13 @@ import AdminPortal from './pages/admin/AdminPortal';
 
 function HomeRedirect() {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-brand-blueLight border-t-brand-blue" />
+      </div>
+    );
+  }
   if (!user) return <Navigate to="/login" replace />;
   if (user.role === 'ADMIN') return <Navigate to="/admin" replace />;
   return <Navigate to="/arena" replace />;

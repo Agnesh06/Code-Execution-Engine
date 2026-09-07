@@ -55,7 +55,7 @@ export default function LeaderboardTable({ leaderboard = [], currentTeamId = nul
   };
 
   return (
-    <div className="card overflow-hidden">
+    <div className="card overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-1">
       <table className="min-w-full divide-y divide-brand-border text-left">
         <thead>
           <tr className="bg-slate-50">
@@ -89,10 +89,10 @@ export default function LeaderboardTable({ leaderboard = [], currentTeamId = nul
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right">
-                  <span className="font-mono text-lg font-bold text-brand-blue">
+                  <span className="font-mono text-xl font-bold text-brand-blue">
                     {entry.score}
                   </span>
-                  <span className="text-xs text-brand-muted ml-1">pts</span>
+                  <span className="text-sm text-brand-muted ml-1">pts</span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right hidden sm:table-cell">
                   <div className="flex items-center justify-end gap-1.5 text-xs text-brand-muted">

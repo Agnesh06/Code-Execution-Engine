@@ -76,6 +76,7 @@ export const api = {
     endEvent: (id) => request(`/admin/events/${id}/end`, { method: 'POST' }),
 
     // Round control
+    getRounds: () => request('/admin/rounds'),
     createRound: (eventId, name, order) => request('/admin/rounds', {
       method: 'POST',
       body: JSON.stringify({ eventId, name, order })
